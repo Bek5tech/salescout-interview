@@ -1,16 +1,21 @@
-// Write a function that accepts an array of URLs,
-// makes parallel queries for each of them, and returns an
-// an array of results in the order in which the queries are completed.
+async function fetchAll(URL_адреса: string[]): Promise<ЗапросРезультат[]> {
+  const запросы = URL_адреса.map(async (url) => {
+    try {
+      const response = await fetch(url);
+      const данные = await response.json();
+      return { данные, статус: response.status };
+    } catch (error) {
+      return { данные: null, статус: 500 }; // Ошибка сервера
+    }
+  });// Write a function that accepts an array of URLs,
+return Promise.all(запросы);
+}
+const URL_адреса = [
+  'https://jsonplaceholder.typicode.com/posts/1',
+  'https://jsonplaceholder.typicode.com/posts/2'
+];
 
-// Example input data:
-// const urls = ['https://jsonplaceholder.typicode.com/posts/1', 
-// 'https://jsonplaceholder.typicode.com/posts/2'];
-
-// Expected result:
-// [
-// { data: { ... }, status: 200 },
-// { data: { ... }, status: 200 }
-// ] 
+fetchAll(URL_адреса).then((результаты) => console.log(результаты));// makes parallel queries for each of them, and returns an
 type RequestsResult = {
     data: any,
     status: number
